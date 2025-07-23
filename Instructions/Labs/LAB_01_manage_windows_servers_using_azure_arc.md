@@ -216,9 +216,13 @@ In this task, you will install Windows Admin Center, register it with Azure, and
 1. In the Windows PowerShell ISE script pane, enter the following script that installs Windows Admin Center and select the green arrow icon in the toolbar to execute it:
 
     ```powershell
-    Invoke-WebRequest 'https://aka.ms/WACDownload' -OutFile "$pwd\WAC.msi"
-    $msiArgs = @("/i", "$pwd\WAC.msi", "/qn", "/L*v", "log.txt", "SME_PORT=443", "SSL_CERTIFICATE_OPTION=generate")
-    Start-Process msiexec.exe -Wait -ArgumentList $msiArgs
+    $parameters = @{
+     Source = "https://aka.ms/WACdownload"
+     Destination = ".\WindowsAdminCenter.exe"
+    }
+    Start-BitsTransfer @parameters
+
+    Start-Process -FilePath '.\WindowsAdminCenter.exe' -ArgumentList '/VERYSILENT' -Wait
     ```
 
     > **Note:** Wait for the installation of Windows Admin Center to complete. The installation should take about 3 minutes. It provisions the Windows Admin Center gateway component accessible via [https://localhost](https://localhost), secured by a self-signed certificate valid for 60 days.
@@ -234,6 +238,7 @@ In this task, you will install Windows Admin Center, register it with Azure, and
     > **Note:** The warning is expected since the target site is using a self-signed certificate.
 
 1. If prompted to authenticate, sign in as **arclabadmin**.
+1. Review all tabs on the Configure your Windows Admin Center Settings and environment pop-up window, including the **Extensions** tab and select Complete to close the window.
 1. Close the pane confirming the successful installation, wait for the updates of the Windows Admin Center extensions to complete, and acknowledge their completion.
 1. In Windows Admin Center, on the **All connections** page, select the cogwheel icon in the upper right corner of the page.
 1. On the **Settings \| Account** page, in the **Azure Account** section, select **Register with Azure** and then, on the **Register with Azure** pane, select **Register**.
